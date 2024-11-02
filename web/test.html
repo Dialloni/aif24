@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Data with Fetch API</title>
+</head>
+<body>
+    <h1>Submit Your Input</h1>
+    <form id="dataForm">
+        <label for="userInput">Input:</label><br>
+        <textarea id="userInput" name="userInput" rows="5" cols="40" required></textarea><br><br>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const userInput = document.getElementById('userInput').value;
+            const endpoint = `./openai?ui=${encodeURIComponent(userInput)}`;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'GET', // Using GET since the data is in the query string
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const responseData = await response.json();
+                document.getElementById('response').textContent = JSON.stringify(responseData, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
